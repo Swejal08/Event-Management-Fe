@@ -1,7 +1,9 @@
 import SessionTable from '@/components/SessionTable'
+import ExpenseTable from '@/components/expenseTable'
 import UserTable from '@/components/userTable'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
 import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
+import { GET_EVENT_EXPENSES } from '@/graphql/expense'
 import { useQuery } from '@apollo/client'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -28,6 +30,17 @@ const EventDetails = () => {
     error: errorEventMembers,
     data: dataEventMembers,
   } = useQuery(GET_EVENT_MEMBERS_DETAIL, {
+    variables: {
+      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
+      eventId,
+    },
+  })
+
+  const {
+    loading: loadingEventExpenses,
+    error: errorEventExpenses,
+    data: dataEventExpenses,
+  } = useQuery(GET_EVENT_EXPENSES, {
     variables: {
       userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId,
@@ -100,6 +113,16 @@ const EventDetails = () => {
           )}
         </div>
       </div>
+      {!loadingEventExpenses && (
+        <div>
+          <h2 className="text-xl font-semibold mb-4 mt-8">Expenses</h2>
+          <p className="font-bold mt-2">
+            Total Expense: {dataEventExpenses.totalExpense.totalExpense}
+          </p>
+
+          <ExpenseTable categories={dataEventExpenses.totalExpense.category} />
+        </div>
+      )}
     </div>
   )
 }

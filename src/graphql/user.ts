@@ -11,6 +11,16 @@ export const CREATE_USER_MUTATION = gql`
   }
 `
 
+export const USER_LOGIN = gql`
+  mutation userLogin($input: InputLogin!) {
+    login(input: $input) {
+      id
+      email
+      accessToken
+    }
+  }
+`
+
 export const INVITE_USER = gql`
   mutation assignUserToEvent($input: AssignEventMembership!) {
     assignEventMembership(input: $input)

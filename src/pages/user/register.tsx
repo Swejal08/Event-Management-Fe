@@ -9,7 +9,7 @@ interface IFormInput {
   phone: string
 }
 
-const User = () => {
+const Register = () => {
   const [createUser] = useMutation(CREATE_USER_MUTATION)
 
   const { showSuccessMessage, showErrorMessage } = useToasts()
@@ -105,4 +105,4 @@ const User = () => {
   )
 }
 
-export default User
+export default Register
