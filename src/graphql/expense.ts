@@ -13,8 +13,8 @@ export const ADD_EVENT_EXPENSE = gql`
 `
 
 export const GET_EVENT_EXPENSES = gql`
-  query TotalEventExpense($userId: ID!, $eventId: ID!) {
-    totalExpense(userId: $userId, eventId: $eventId) {
+  query TotalEventExpense($eventId: ID!) {
+    totalExpense(eventId: $eventId) {
       totalExpense
       name
       category {

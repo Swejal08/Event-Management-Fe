@@ -3,15 +3,19 @@ import { useMutation, useQuery } from '@apollo/client'
 import { useToasts } from '@/hooks/useToasts'
 import { ADD_EVENT_SESSION } from '@/graphql/session'
 import { GET_EVENTS_QUERY } from '@/graphql/event'
+import Router, { useRouter } from 'next/router'
 
 interface IFormInput {
   eventId: string
+  name: string
   startDate: string
   endDate: string
 }
 
 const AddSession = () => {
   const [createSession] = useMutation(ADD_EVENT_SESSION)
+
+  const router = useRouter()
 
   const { showSuccessMessage, showErrorMessage } = useToasts()
 
@@ -22,16 +26,12 @@ const AddSession = () => {
     handleSubmit,
   } = useForm<IFormInput>()
 
-  const { loading, error, data } = useQuery(GET_EVENTS_QUERY, {
-    variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
-    },
-  })
+  const { loading, error, data } = useQuery(GET_EVENTS_QUERY)
 
   const onSubmit: SubmitHandler<IFormInput> = async data => {
     const sessionInput = {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId: data.eventId,
+      name: data.name,
       startDate: data.startDate,
       endDate: data.endDate,
     }
@@ -42,6 +42,7 @@ const AddSession = () => {
       })
       if (data) {
         showSuccessMessage('Session created')
+        router.push(`/event/${sessionInput.eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(
@@ -98,6 +99,20 @@ const AddSession = () => {
                 )}
               />
             </div>
+            <div>
+              <label className="font-medium">Name</label>
+              <input
+                type="text"
+                {...register('name', {
+                  required: 'Name is required',
+                })}
+                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+              />
+              {errors.name && (
+                <p className="text-red-500">{errors.name.message}</p>
+              )}
+            </div>
+
             <div>
               <label className="font-medium">Start Date</label>
               <input

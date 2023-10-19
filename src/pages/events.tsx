@@ -1,3 +1,5 @@
+import Sidebar from '@/components/SideBar'
+import TableLoading from '@/components/Tables/TableLoading'
 import { GET_EVENTS_QUERY } from '@/graphql/event'
 import { useQuery } from '@apollo/client'
 import Link from 'next/link'
@@ -6,13 +8,13 @@ import { useRouter } from 'next/router'
 const Events = () => {
   const { loading, error, data } = useQuery(GET_EVENTS_QUERY, {
     variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
+      userId: '3841c2cd-5b37-41eb-ab8e-95c4536ae161',
     },
   })
 
   const router = useRouter()
 
-  const eventId = router.query.pcid
+  const eventId = router.query.pid
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
@@ -33,48 +35,61 @@ const Events = () => {
         </div>
       </div>
       <div className="mt-12 shadow-sm border rounded-lg overflow-x-auto">
-        <table className="w-full table-auto text-sm text-left">
-          <thead className="bg-gray-50 text-gray-600 font-medium border-b">
-            <tr>
-              <th className="py-3 px-6 max-w-[100px]">Event</th>
-              <th className="py-3 px-6 max-w-[150px]">Description</th>
-              <th className="py-3 px-6 max-w-[200px]">Location</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 divide-y">
-            {data?.events.map((event: any) => (
-              <tr
-                key={event.id}
-                className="cursor-pointer"
-                onClick={() => router.push(`/event/${event.id}`)}
-              >
-                <td className="px-6 py-4 max-w-[100px] whitespace-normal break-all">
-                  {event.name}
-                </td>
-                <td className="px-6 py-4 max-w-[150px] whitespace-normal break-all">
-                  {event.description}
-                </td>
-                <td className="px-6 py-4 max-w-[200px] whitespace-normal break-all">
-                  {event.location}
-                </td>
-                <td className="text-right px-6 max-w-[50px] whitespace-nowrap">
-                  <a
-                    // href="javascript:void()"
-                    className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
-                  >
-                    Edit
-                  </a>
-                  <button
-                    // href="javascript:void()"
-                    className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
-                  >
-                    Delete
-                  </button>
-                </td>
+        {loading && <TableLoading rowHeight={24} headerCount={3} />}
+        {!loading && (
+          <table className="w-full table-auto text-sm text-left">
+            <thead className="bg-gray-50 text-gray-600 font-medium border-b">
+              <tr>
+                <th className="py-3 px-6 max-w-[100px]">Event</th>
+                <th className="py-3 px-6 max-w-[150px]">Description</th>
+                <th className="py-3 px-6 max-w-[200px]">Location</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-gray-600 divide-y">
+              {!data.events.length ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-4 whitespace-nowrap">
+                    {error
+                      ? 'Uh oh, it looks like there is a problem'
+                      : 'No events found'}
+                  </td>
+                </tr>
+              ) : (
+                data?.events.map((event: any) => (
+                  <tr
+                    key={event.id}
+                    className="cursor-pointer"
+                    onClick={() => router.push(`/event/${event.id}`)}
+                  >
+                    <td className="px-6 py-4 max-w-[100px] whitespace-normal break-all">
+                      {event.name}
+                    </td>
+                    <td className="px-6 py-4 max-w-[150px] whitespace-normal break-all">
+                      {event.description}
+                    </td>
+                    <td className="px-6 py-4 max-w-[200px] whitespace-normal break-all">
+                      {event.location}
+                    </td>
+                    <td className="text-right px-6 max-w-[50px] whitespace-nowrap">
+                      <a
+                        // href="javascript:void()"
+                        className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
+                      >
+                        Edit
+                      </a>
+                      <button
+                        // href="javascript:void()"
+                        className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   )

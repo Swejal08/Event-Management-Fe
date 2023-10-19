@@ -1,6 +1,6 @@
-import SessionTable from '@/components/SessionTable'
 import ExpenseTable from '@/components/expenseTable'
-import UserTable from '@/components/userTable'
+import SessionTable from '@/features/session/components/SessionTable'
+import UserTable from '@/features/user/components/UserTable'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
 import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
 import { GET_EVENT_EXPENSES } from '@/graphql/expense'
@@ -20,7 +20,6 @@ const EventDetails = () => {
     data: dataEventDetails,
   } = useQuery(GET_EVENT_DETAILS, {
     variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId,
     },
   })
@@ -31,7 +30,6 @@ const EventDetails = () => {
     data: dataEventMembers,
   } = useQuery(GET_EVENT_MEMBERS_DETAIL, {
     variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId,
     },
   })
@@ -42,7 +40,6 @@ const EventDetails = () => {
     data: dataEventExpenses,
   } = useQuery(GET_EVENT_EXPENSES, {
     variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId,
     },
   })
@@ -81,7 +78,7 @@ const EventDetails = () => {
 
         <div className="ml-auto flex space-x-4">
           <Link
-            href={`/event/${eventId}/session/add`}
+            href={`/session/add`}
             className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
           >
             Add Session
@@ -95,23 +92,18 @@ const EventDetails = () => {
         </div>
       </div>
 
-      {/* Sessions and Membership side by side */}
-      <div className="flex">
-        {/* Left Side: Sessions */}
-        <div className="flex-1 pr-8">
-          <h2 className="text-xl font-semibold mb-4">Sessions</h2>
-          {!loadingEventDetails && (
-            <SessionTable sessions={dataEventDetails.eventDetails.sessions} />
-          )}
-        </div>
+      <div className="flex-1 pr-8">
+        <h2 className="text-xl font-semibold">Sessions</h2>
+        {!loadingEventDetails && (
+          <SessionTable sessions={dataEventDetails.eventDetails.sessions} />
+        )}
+      </div>
 
-        {/* Right Side: Membership */}
-        <div className="flex-1">
-          <h2 className="text-xl font-semibold mb-4">Members</h2>
-          {!loadingEventMembers && (
-            <UserTable members={dataEventMembers.eventMembers} />
-          )}
-        </div>
+      <div className="flex-1 mt-12">
+        <h2 className="text-xl font-semibold">Members</h2>
+        {!loadingEventMembers && (
+          <UserTable users={dataEventMembers.eventMembers} />
+        )}
       </div>
       {!loadingEventExpenses && (
         <div>

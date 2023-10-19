@@ -10,12 +10,23 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.6",
+    "@material-tailwind/react": "^2.1.4",
+    "@radix-ui/react-alert-dialog": "^1.0.5",
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "cookie-cutter": "^0.2.0",
     "graphql": "^16.8.1",
+    "jwt-decode": "^3.1.2",
+    "lucide-react": "^0.288.0",
     "next": "13.5.5",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
-    "react-hot-toast": "^2.4.1"
+    "react-hot-toast": "^2.4.1",
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss-animate": "^1.0.7",
+    "universal-cookie": "^6.1.1"
   },
   "devDependencies": {
     "@types/node": "^20",
