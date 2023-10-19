@@ -26,7 +26,6 @@ const AddEventCategory = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = async data => {
     const categoryInput = {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId,
       categoryName: data.name,
     }
@@ -37,6 +36,7 @@ const AddEventCategory = () => {
       if (data) {
         reset()
         showSuccessMessage('Category created')
+        router.push(`events/${eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(

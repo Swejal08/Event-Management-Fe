@@ -37,3 +37,9 @@ export const GET_EVENT_DETAILS = gql`
     }
   }
 `
+
+export const REMOVE_EVENT = gql`
+  mutation deleteEvent($input: DeleteEvent!) {
+    deleteEvent(input: $input)
+  }
+`

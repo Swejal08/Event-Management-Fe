@@ -10,8 +10,8 @@ export const ADD_EVENT_CATEGORY = gql`
 `
 
 export const GET_EVENT_CATEGORIES = gql`
-  query getCategories($userId: ID!, $eventId: ID!) {
-    getCategories(userId: $userId, eventId: $eventId) {
+  query getCategories {
+    getCategories {
       id
       categoryName
     }

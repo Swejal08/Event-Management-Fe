@@ -1,6 +1,7 @@
-import { CREATE_EVENT_MUTATION } from '@/graphql/event'
+import { CREATE_EVENT_MUTATION, GET_EVENTS_QUERY } from '@/graphql/event'
 import { useToasts } from '@/hooks/useToasts'
 import { useMutation } from '@apollo/client'
+import Router, { useRouter } from 'next/router'
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
@@ -18,12 +19,17 @@ const AddEvent = () => {
     handleSubmit,
     reset,
   } = useForm<IFormInput>()
-
-  const [createEvent] = useMutation(CREATE_EVENT_MUTATION)
+  const router = useRouter()
+  const [createEvent] = useMutation(CREATE_EVENT_MUTATION, {
+    refetchQueries: [
+      {
+        query: GET_EVENTS_QUERY,
+      },
+    ],
+  })
 
   const onSubmit: SubmitHandler<IFormInput> = async data => {
     const eventInput = {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       name: data.name,
       description: data.description,
       location: data.location,
@@ -31,8 +37,8 @@ const AddEvent = () => {
     try {
       const { data } = await createEvent({ variables: { input: eventInput } })
       if (data) {
-        reset()
         showSuccessMessage('Event created')
+        router.push('/events')
       }
     } catch (err: any) {
       showErrorMessage(

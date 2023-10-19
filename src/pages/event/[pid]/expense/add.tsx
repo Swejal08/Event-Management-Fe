@@ -30,16 +30,10 @@ const AddExpense = () => {
 
   const [createExpense] = useMutation(ADD_EVENT_EXPENSE)
 
-  const { loading, error, data } = useQuery(GET_EVENT_CATEGORIES, {
-    variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
-      eventId,
-    },
-  })
+  const { loading, data } = useQuery(GET_EVENT_CATEGORIES)
 
   const onSubmit: SubmitHandler<IFormInput> = async data => {
     const expenseInput = {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId: eventId as string,
       itemName: data.item,
       cost: parseInt(data.cost, 10),
@@ -52,8 +46,8 @@ const AddExpense = () => {
         variables: { input: expenseInput },
       })
       if (data) {
-        reset()
         showSuccessMessage('Expense created')
+        router.push(`events/${eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(
@@ -116,11 +110,18 @@ const AddExpense = () => {
               )}
             </div>
             <div>
-              <label className="font-medium">Category</label>
+              <label className="font-medium">
+                Category{' '}
+                {data.getCategories.length ? '' : '(Create event Category)'}
+              </label>
               <Controller
                 name="categoryId"
+                // rules={{
+                //   required: 'Please choose a category',
+                // }}
                 control={control}
-                defaultValue={data.getCategories[0].id}
+                disabled={!data.getCategories.length}
+                defaultValue={data.getCategories?.[0]?.id}
                 render={({ field }) => (
                   <select
                     {...field}

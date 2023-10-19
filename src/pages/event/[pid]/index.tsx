@@ -1,4 +1,4 @@
-import ExpenseTable from '@/components/expenseTable'
+import ExpenseTable from '@/features/expense/components/ExpenseTable'
 import SessionTable from '@/features/session/components/SessionTable'
 import UserTable from '@/features/user/components/UserTable'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
@@ -14,25 +14,23 @@ const EventDetails = () => {
 
   const eventId = router.query.pid
 
-  const {
-    loading: loadingEventDetails,
-    error: errorEventDetails,
-    data: dataEventDetails,
-  } = useQuery(GET_EVENT_DETAILS, {
-    variables: {
-      eventId,
+  const { loading: loadingEventDetails, data: dataEventDetails } = useQuery(
+    GET_EVENT_DETAILS,
+    {
+      variables: {
+        eventId,
+      },
     },
-  })
+  )
 
-  const {
-    loading: loadingEventMembers,
-    error: errorEventMembers,
-    data: dataEventMembers,
-  } = useQuery(GET_EVENT_MEMBERS_DETAIL, {
-    variables: {
-      eventId,
+  const { loading: loadingEventMembers, data: dataEventMembers } = useQuery(
+    GET_EVENT_MEMBERS_DETAIL,
+    {
+      variables: {
+        eventId,
+      },
     },
-  })
+  )
 
   const {
     loading: loadingEventExpenses,
@@ -82,6 +80,18 @@ const EventDetails = () => {
             className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
           >
             Add Session
+          </Link>
+          <Link
+            href={`/event/${eventId}/category/add`}
+            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+          >
+            Add Category
+          </Link>
+          <Link
+            href={`/event/${eventId}/expense/add`}
+            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+          >
+            Add Expense
           </Link>
           <Link
             href={`/event/${eventId}/invite`}
