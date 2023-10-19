@@ -21,9 +21,24 @@ export const USER_LOGIN = gql`
   }
 `
 
+export const GET_ME = gql`
+  query me {
+    id
+    name
+    email
+    phone
+  }
+`
+
 export const INVITE_USER = gql`
   mutation assignUserToEvent($input: AssignEventMembership!) {
     assignEventMembership(input: $input)
+  }
+`
+
+export const REMOVE_USER = gql`
+  mutation removeUserFromEvent($input: RemoveEventMembership!) {
+    removeEventMembership(input: $input)
   }
 `
 
