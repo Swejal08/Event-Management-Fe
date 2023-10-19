@@ -3,27 +3,34 @@ import { useMutation, useQuery } from '@apollo/client'
 import { INVITE_USER, USER_DETAILS } from '@/graphql/user'
 import { useToasts } from '@/hooks/useToasts'
 import { useRouter } from 'next/router'
-import { MembershipRole } from '@/components/userTable'
+import { UserRole } from '@/types/membership'
+import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
 
 interface IFormInput {
-  role: MembershipRole
+  role: UserRole
 }
 
 const ReassignUser = () => {
-  const [reassignUser] = useMutation(INVITE_USER)
-
   const router = useRouter()
 
   const eventId = router.query.pid
 
-  const memberId = router.query.uid
+  const userId = router.query.uid
+
+  const [reassignUser] = useMutation(INVITE_USER, {
+    refetchQueries: [
+      {
+        query: GET_EVENT_MEMBERS_DETAIL,
+        variables: { eventId },
+      },
+    ],
+  })
 
   const { showSuccessMessage, showErrorMessage } = useToasts()
 
-  const { loading, error, data } = useQuery(USER_DETAILS, {
+  const { loading, data } = useQuery(USER_DETAILS, {
     variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
-      memberId,
+      userId,
       eventId,
     },
   })
@@ -34,15 +41,15 @@ const ReassignUser = () => {
       const { data } = await reassignUser({
         variables: {
           input: {
-            userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
             eventId,
-            memberId,
+            userId,
             role,
           },
         },
       })
       if (data) {
         showSuccessMessage('User role reassigned')
+        router.push(`/event/${eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(
@@ -99,7 +106,7 @@ const ReassignUser = () => {
                       Choose role
                     </option>
 
-                    {Object.values(MembershipRole).map(role => (
+                    {Object.values(UserRole).map(role => (
                       <option key={role} value={role}>
                         {role.toUpperCase()}
                       </option>

@@ -6,6 +6,7 @@ import { IEvent } from '@/types/event'
 import EventTableRow from './EventTableRow'
 import EventDeleteModal from './EventDeleteModal'
 import { GET_EVENTS_QUERY, REMOVE_EVENT } from '@/graphql/event'
+import { useRouter } from 'next/router'
 
 interface IProps {
   events: IEvent[]
@@ -31,6 +32,8 @@ const EventTable: React.FC<IProps> = ({ events }) => {
     },
   ]
 
+  const router = useRouter()
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [activeEventId, setActiveEventId] = useState<string | null>(null)
 
@@ -50,7 +53,10 @@ const EventTable: React.FC<IProps> = ({ events }) => {
 
   const renderActionButtons = (event: IEvent) => (
     <>
-      <button className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg">
+      <button
+        onClick={() => router.push(`/event/${event.id}/edit`)}
+        className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
+      >
         Edit
       </button>
       <button

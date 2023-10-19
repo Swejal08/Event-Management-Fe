@@ -57,7 +57,12 @@ const UserTable: React.FC<IProps> = ({ users }) => {
 
   const renderActionButtons = (user: IMembershipDetails) => (
     <>
-      <button className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg">
+      <button
+        onClick={() =>
+          router.push(`/event/${eventId}/user/${user.user.id}/reassign`)
+        }
+        className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
+      >
         Edit
       </button>
       <button

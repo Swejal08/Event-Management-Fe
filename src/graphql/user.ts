@@ -43,8 +43,8 @@ export const REMOVE_USER = gql`
 `
 
 export const NON_EVENT_MEMBER_USER = gql`
-  query GetNonEventMemberUser($userId: ID!, $eventId: ID!) {
-    nonEventMembers(userId: $userId, eventId: $eventId) {
+  query GetNonEventMemberUser($eventId: ID!) {
+    nonEventMembers(eventId: $eventId) {
       id
       name
       email
@@ -54,8 +54,8 @@ export const NON_EVENT_MEMBER_USER = gql`
 `
 
 export const USER_DETAILS = gql`
-  query GetUserDetailsForEvent($userId: ID!, $memberId: ID!, $eventId: ID!) {
-    userDetails(userId: $userId, memberId: $memberId, eventId: $eventId) {
+  query GetUserDetailsForEvent($userId: ID!, $eventId: ID!) {
+    userDetails(userId: $userId, eventId: $eventId) {
       id
       name
       email

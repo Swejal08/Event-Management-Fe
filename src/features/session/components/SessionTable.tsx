@@ -50,7 +50,12 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
 
   const renderActionButtons = (session: ISession) => (
     <>
-      <button className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg">
+      <button
+        onClick={() =>
+          router.push(`/event/${eventId}/session/${session.id}/edit`)
+        }
+        className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
+      >
         Edit
       </button>
       <button

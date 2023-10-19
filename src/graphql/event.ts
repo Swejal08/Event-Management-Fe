@@ -11,6 +11,12 @@ export const CREATE_EVENT_MUTATION = gql`
   }
 `
 
+export const UPDATE_EVENT = gql`
+  mutation updateEvent($input: UpdateEvent!) {
+    updateEvent(input: $input)
+  }
+`
+
 export const GET_EVENTS_QUERY = gql`
   query GetMyEvents {
     events {
@@ -31,6 +37,7 @@ export const GET_EVENT_DETAILS = gql`
       description
       sessions {
         id
+        name
         startDate
         endDate
       }

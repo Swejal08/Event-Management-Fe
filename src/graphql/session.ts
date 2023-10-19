@@ -12,6 +12,12 @@ export const ADD_EVENT_SESSION = gql`
   }
 `
 
+export const UPDATE_EVENT_SESSION = gql`
+  mutation updateSession($input: UpdateSession!) {
+    updateSession(input: $input)
+  }
+`
+
 export const REMOVE_EVENT_SESSION = gql`
   mutation deleteSession($input: DeleteSession!) {
     deleteSession(input: $input)

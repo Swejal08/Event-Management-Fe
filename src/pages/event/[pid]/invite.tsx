@@ -7,49 +7,50 @@ import {
 } from '@/graphql/user'
 import { useToasts } from '@/hooks/useToasts'
 import { useRouter } from 'next/router'
-import { MembershipRole } from '@/components/userTable'
+import { UserRole } from '@/types/membership'
+import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
 
 interface IFormInput {
   userId: string
-  role: MembershipRole
+  role: UserRole
 }
 
 const InviteUser = () => {
-  const [inviteUser] = useMutation(INVITE_USER)
-
   const router = useRouter()
 
   const eventId = router.query.pid
+  const [inviteUser] = useMutation(INVITE_USER, {
+    refetchQueries: [
+      {
+        query: GET_EVENT_MEMBERS_DETAIL,
+        variables: { eventId },
+      },
+    ],
+  })
 
   const { showSuccessMessage, showErrorMessage } = useToasts()
 
-  const { loading, error, data } = useQuery(NON_EVENT_MEMBER_USER, {
+  const { loading, data } = useQuery(NON_EVENT_MEMBER_USER, {
     variables: {
-      userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
       eventId,
     },
   })
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    control,
-  } = useForm<IFormInput>()
+  const { handleSubmit, control } = useForm<IFormInput>()
   const onSubmit: SubmitHandler<IFormInput> = async ({ userId, role }) => {
     try {
       const { data } = await inviteUser({
         variables: {
           input: {
-            userId: '0c5d07f9-b6b6-4ab8-85ff-09d92824be4a',
-            eventId,
-            memberId: userId,
+            eventId: eventId,
+            userId,
             role,
           },
         },
       })
       if (data) {
         showSuccessMessage('User created')
+        router.push(`event/${eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(
@@ -83,6 +84,7 @@ const InviteUser = () => {
               <Controller
                 name="userId"
                 control={control}
+                defaultValue={data.nonEventMembers?.[0]?.id ?? ''}
                 render={({ field }) => (
                   <select
                     {...field}
@@ -124,7 +126,7 @@ const InviteUser = () => {
                       Choose role
                     </option>
 
-                    {Object.values(MembershipRole).map(role => (
+                    {Object.values(UserRole).map(role => (
                       <option key={role} value={role}>
                         {role.toUpperCase()}
                       </option>
