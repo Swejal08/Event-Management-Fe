@@ -1,10 +1,6 @@
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from '@apollo/client'
-import {
-  CREATE_USER_MUTATION,
-  INVITE_USER,
-  NON_EVENT_MEMBER_USER,
-} from '@/graphql/user'
+import { INVITE_USER, NON_EVENT_MEMBER_USER } from '@/graphql/user'
 import { useToasts } from '@/hooks/useToasts'
 import { useRouter } from 'next/router'
 import { UserRole } from '@/types/membership'
@@ -18,7 +14,7 @@ interface IFormInput {
 const InviteUser = () => {
   const router = useRouter()
 
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
   const [inviteUser] = useMutation(INVITE_USER, {
     refetchQueries: [
       {
@@ -36,7 +32,11 @@ const InviteUser = () => {
     },
   })
 
-  const { handleSubmit, control } = useForm<IFormInput>()
+  const {
+    formState: { errors },
+    handleSubmit,
+    control,
+  } = useForm<IFormInput>()
   const onSubmit: SubmitHandler<IFormInput> = async ({ userId, role }) => {
     try {
       const { data } = await inviteUser({
@@ -49,8 +49,8 @@ const InviteUser = () => {
         },
       })
       if (data) {
-        showSuccessMessage('User created')
-        router.push(`event/${eventId}`)
+        showSuccessMessage('User Invited')
+        router.push(`/event/${eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(
@@ -84,6 +84,7 @@ const InviteUser = () => {
               <Controller
                 name="userId"
                 control={control}
+                rules={{ required: 'User is required' }}
                 defaultValue={data.nonEventMembers?.[0]?.id ?? ''}
                 render={({ field }) => (
                   <select
@@ -106,13 +107,16 @@ const InviteUser = () => {
                   </select>
                 )}
               />
+              {errors.userId && (
+                <p className="text-red-500">{errors.userId.message}</p>
+              )}
             </div>
             <div>
               <label className="font-medium">Start a role</label>
-
               <Controller
                 name="role"
                 control={control}
+                defaultValue={UserRole.ADMIN}
                 render={({ field }) => (
                   <select
                     {...field}

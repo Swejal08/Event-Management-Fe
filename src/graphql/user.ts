@@ -22,11 +22,13 @@ export const USER_LOGIN = gql`
 `
 
 export const GET_ME = gql`
-  query me {
-    id
-    name
-    email
-    phone
+  query Me {
+    me {
+      id
+      name
+      email
+      phone
+    }
   }
 `
 
@@ -56,6 +58,18 @@ export const NON_EVENT_MEMBER_USER = gql`
 export const USER_DETAILS = gql`
   query GetUserDetailsForEvent($userId: ID!, $eventId: ID!) {
     userDetails(userId: $userId, eventId: $eventId) {
+      id
+      name
+      email
+      phone
+      role
+    }
+  }
+`
+
+export const MY_USER_DETAILS = gql`
+  query GetMyUserDetails($eventId: ID!) {
+    myUserDetail(eventId: $eventId) {
       id
       name
       email

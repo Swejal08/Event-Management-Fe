@@ -1,13 +1,15 @@
 import Table from '@/components/Tables/Table'
 import { useState } from 'react'
 import UserTableRow from './UserTableRow'
-import { IMembershipDetails } from '@/types/membership'
+import { IMembershipDetails, UserRole } from '@/types/membership'
 import UserDeleteModal from './UserDeleteModal'
-import { useMutation } from '@apollo/client'
-import { REMOVE_USER } from '@/graphql/user'
+import { useMutation, useQuery } from '@apollo/client'
+import { MY_USER_DETAILS, REMOVE_USER } from '@/graphql/user'
 import { useRouter } from 'next/router'
 import { useToasts } from '@/hooks/useToasts'
 import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
+import RBACInline from '@/components/RBAC/RBACInline'
+import { IsAdmin } from '@/lib/utils'
 
 interface IProps {
   users: IMembershipDetails[]
@@ -31,14 +33,10 @@ const UserTable: React.FC<IProps> = ({ users }) => {
       key: 'phone',
       label: 'Phone',
     },
-    {
-      key: 'action',
-      label: 'Action',
-    },
   ]
 
   const router = useRouter()
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [activeUserId, setActiveUserId] = useState<string | null>(null)
   const [removeUser] = useMutation(REMOVE_USER, {
@@ -51,12 +49,27 @@ const UserTable: React.FC<IProps> = ({ users }) => {
   })
   const { showSuccessMessage, showErrorMessage } = useToasts()
 
+  const { loading, error, data } = useQuery(MY_USER_DETAILS, {
+    variables: { eventId },
+  })
+
+  if (loading || error) {
+    return null
+  }
+
+  if (IsAdmin(data.myUserDetail.role)) {
+    USER_COLUMNS.push({
+      key: 'action',
+      label: 'Action',
+    })
+  }
+
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false)
   }
 
   const renderActionButtons = (user: IMembershipDetails) => (
-    <>
+    <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
       <button
         onClick={() =>
           router.push(`/event/${eventId}/user/${user.user.id}/reassign`)
@@ -74,7 +87,7 @@ const UserTable: React.FC<IProps> = ({ users }) => {
       >
         Remove
       </button>
-    </>
+    </RBACInline>
   )
 
   const handleMemberDismissal = async (id: string | null) => {

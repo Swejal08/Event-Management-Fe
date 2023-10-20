@@ -1,6 +1,6 @@
 import Table from '@/components/Tables/Table'
 import { useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { useToasts } from '@/hooks/useToasts'
 import { ISession } from '@/types/session'
@@ -8,6 +8,8 @@ import SessionTableRow from './SessionTableRow'
 import SessionDeleteModal from './SessionDeleteModal'
 import { REMOVE_EVENT_SESSION } from '@/graphql/session'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
+import { MY_USER_DETAILS } from '@/graphql/user'
+import { IsAttendee } from '@/lib/utils'
 
 interface IProps {
   sessions: ISession[]
@@ -43,6 +45,21 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
     ],
   })
   const { showSuccessMessage, showErrorMessage } = useToasts()
+
+  const { loading, error, data } = useQuery(MY_USER_DETAILS, {
+    variables: { eventId },
+  })
+
+  if (loading || error) {
+    return null
+  }
+
+  if (!IsAttendee(data.myUserDetail.role)) {
+    SESSION_COLUMNS.push({
+      key: 'action',
+      label: 'Action',
+    })
+  }
 
   const handleCloseDeleteModal = () => {
     setDeleteModalOpen(false)

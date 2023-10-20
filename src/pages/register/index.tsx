@@ -2,10 +2,12 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation } from '@apollo/client'
 import { CREATE_USER_MUTATION } from '@/graphql/user'
 import { useToasts } from '@/hooks/useToasts'
+import Router, { useRouter } from 'next/router'
 
 interface IFormInput {
   name: string
   email: string
+  password: string
   phone: string
 }
 
@@ -13,6 +15,8 @@ const Register = () => {
   const [createUser] = useMutation(CREATE_USER_MUTATION)
 
   const { showSuccessMessage, showErrorMessage } = useToasts()
+
+  const router = useRouter()
 
   const {
     register,
@@ -23,12 +27,14 @@ const Register = () => {
     const userInput = {
       name: data.name,
       email: data.email,
+      password: data.password,
       phone: data.phone,
     }
     try {
       const { data } = await createUser({ variables: { input: userInput } })
       if (data) {
         showSuccessMessage('User created')
+        router.push('/login')
       }
     } catch (err: any) {
       showErrorMessage(
@@ -82,6 +88,19 @@ const Register = () => {
               />
               {errors.email && (
                 <p className="text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="font-medium">Password</label>
+              <input
+                type="password"
+                {...register('password', {
+                  required: 'Password is required',
+                })}
+                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+              />
+              {errors.password && (
+                <p className="text-red-500">{errors.password.message}</p>
               )}
             </div>
             <div>

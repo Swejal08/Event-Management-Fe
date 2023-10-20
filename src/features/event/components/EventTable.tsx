@@ -7,6 +7,8 @@ import EventTableRow from './EventTableRow'
 import EventDeleteModal from './EventDeleteModal'
 import { GET_EVENTS_QUERY, REMOVE_EVENT } from '@/graphql/event'
 import { useRouter } from 'next/router'
+import RBACInline from '@/components/RBAC/RBACInline'
+import { UserRole } from '@/types/membership'
 
 interface IProps {
   events: IEvent[]
@@ -52,7 +54,7 @@ const EventTable: React.FC<IProps> = ({ events }) => {
   }
 
   const renderActionButtons = (event: IEvent) => (
-    <>
+    <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={event.id}>
       <button
         onClick={() => router.push(`/event/${event.id}/edit`)}
         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
@@ -68,7 +70,7 @@ const EventTable: React.FC<IProps> = ({ events }) => {
       >
         Remove
       </button>
-    </>
+    </RBACInline>
   )
 
   const handleEventDeletion = async (id: string | null) => {

@@ -5,6 +5,8 @@ import jwt_decode, { JwtPayload } from 'jwt-decode'
 
 const privateRoutes = ['/events', '/event']
 
+const publicRoutes = ['/login', '/register']
+
 export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const token = req.cookies.get('accessToken')?.value
@@ -30,6 +32,11 @@ export default function middleware(req: NextRequest) {
 
   if (!isAuthenticated && privateRoutes.includes(pathname)) {
     const absoluteURL = new URL('/login', req.nextUrl.origin)
+    return NextResponse.redirect(absoluteURL.toString())
+  }
+
+  if (isAuthenticated && publicRoutes.includes(pathname)) {
+    const absoluteURL = new URL('/events', req.nextUrl.origin)
     return NextResponse.redirect(absoluteURL.toString())
   }
 

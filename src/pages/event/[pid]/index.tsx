@@ -1,3 +1,4 @@
+import RBACInline from '@/components/RBAC/RBACInline'
 import ExpenseTable from '@/features/expense/components/ExpenseTable'
 import SessionTable from '@/features/session/components/SessionTable'
 import UserTable from '@/features/user/components/UserTable'
@@ -6,13 +7,14 @@ import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
 import { GET_EVENT_EXPENSES } from '@/graphql/expense'
 import { useQuery } from '@apollo/client'
 import Link from 'next/link'
+import { UserRole } from '@/types/membership'
 import { useRouter } from 'next/router'
 import React from 'react'
 
 const EventDetails = () => {
   const router = useRouter()
 
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
 
   const { loading: loadingEventDetails, data: dataEventDetails } = useQuery(
     GET_EVENT_DETAILS,
@@ -75,24 +77,31 @@ const EventDetails = () => {
         </table>
 
         <div className="ml-auto flex space-x-4">
-          <Link
-            href={`/session/add`}
-            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+          <RBACInline
+            allowedRoles={[UserRole.ADMIN, UserRole.CONTRIBUTOR]}
+            eventId={eventId}
           >
-            Add Session
-          </Link>
-          <Link
-            href={`/event/${eventId}/expense/add`}
-            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-          >
-            Add Expense
-          </Link>
-          <Link
-            href={`/event/${eventId}/invite`}
-            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-          >
-            Invite User
-          </Link>
+            <Link
+              href={`/session/add`}
+              className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+            >
+              Add Session
+            </Link>
+            <Link
+              href={`/event/${eventId}/invite`}
+              className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+            >
+              Invite User
+            </Link>
+          </RBACInline>
+          <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
+            <Link
+              href={`/event/${eventId}/expense/add`}
+              className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+            >
+              Add Expense
+            </Link>
+          </RBACInline>
         </div>
       </div>
 
