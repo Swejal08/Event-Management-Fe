@@ -4,12 +4,12 @@ import UserTableRow from './UserTableRow'
 import { IMembershipDetails, UserRole } from '@/types/membership'
 import UserDeleteModal from './UserDeleteModal'
 import { useMutation, useQuery } from '@apollo/client'
-import { MY_USER_DETAILS, REMOVE_USER } from '@/graphql/user'
 import { useRouter } from 'next/router'
 import { useToasts } from '@/hooks/useToasts'
-import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
 import RBACInline from '@/components/RBAC/RBACInline'
 import { IsAdmin } from '@/lib/utils'
+import { MY_USER_DETAILS, REMOVE_USER } from '../schema/user'
+import { GET_EVENT_MEMBERS_DETAIL } from '../schema/eventMembers'
 
 interface IProps {
   users: IMembershipDetails[]

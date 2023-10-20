@@ -5,6 +5,8 @@ import SessionForm from '@/features/session/components/SessionForm'
 import { useRouter } from 'next/router'
 import { IEvent } from '@/types/event'
 import { ISession } from '@/types/session'
+import { ReactNode } from 'react'
+import { UserRole } from '@/types/membership'
 
 const EditSession = () => {
   const router = useRouter()
@@ -30,5 +32,11 @@ const EditSession = () => {
 
   return <SessionForm session={sessionDetail} />
 }
+
+EditSession.getLayout = function getLayout(page: ReactNode) {
+  return <>{page}</>
+}
+
+EditSession.allowedRoles = [UserRole.ADMIN, UserRole.CONTRIBUTOR]
 
 export default EditSession

@@ -3,13 +3,13 @@ import ExpenseTable from '@/features/expense/components/ExpenseTable'
 import SessionTable from '@/features/session/components/SessionTable'
 import UserTable from '@/features/user/components/UserTable'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
-import { GET_EVENT_MEMBERS_DETAIL } from '@/graphql/eventMembers'
 import { GET_EVENT_EXPENSES } from '@/graphql/expense'
 import { useQuery } from '@apollo/client'
 import Link from 'next/link'
 import { UserRole } from '@/types/membership'
 import { useRouter } from 'next/router'
 import React from 'react'
+import { GET_EVENT_MEMBERS_DETAIL } from '@/features/user/schema/eventMembers'
 
 const EventDetails = () => {
   const router = useRouter()
@@ -96,6 +96,14 @@ const EventDetails = () => {
           </RBACInline>
           <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
             <Link
+              href={`/category/add`}
+              className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
+            >
+              Add Category
+            </Link>
+          </RBACInline>
+          <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
+            <Link
               href={`/event/${eventId}/expense/add`}
               className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
             >
@@ -118,7 +126,7 @@ const EventDetails = () => {
           <UserTable users={dataEventMembers.eventMembers} />
         )}
       </div>
-      {!loadingEventExpenses && (
+      {/* {!loadingEventExpenses && (
         <div>
           <h2 className="text-xl font-semibold mb-4 mt-8">Expenses</h2>
           <p className="font-bold mt-2">
@@ -127,7 +135,7 @@ const EventDetails = () => {
 
           <ExpenseTable categories={dataEventExpenses.totalExpense.category} />
         </div>
-      )}
+      )} */}
     </div>
   )
 }

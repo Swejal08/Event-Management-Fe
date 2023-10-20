@@ -8,8 +8,8 @@ import SessionTableRow from './SessionTableRow'
 import SessionDeleteModal from './SessionDeleteModal'
 import { REMOVE_EVENT_SESSION } from '@/graphql/session'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
-import { MY_USER_DETAILS } from '@/graphql/user'
 import { IsAttendee } from '@/lib/utils'
+import { MY_USER_DETAILS } from '@/features/user/schema/user'
 
 interface IProps {
   sessions: ISession[]

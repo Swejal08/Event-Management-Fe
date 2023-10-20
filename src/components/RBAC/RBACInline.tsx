@@ -1,4 +1,4 @@
-import { MY_USER_DETAILS } from '@/graphql/user'
+import { MY_USER_DETAILS } from '@/features/user/schema/user'
 import { UserRole } from '@/types/membership'
 import { useQuery } from '@apollo/client'
 import { ReactNode } from 'react'

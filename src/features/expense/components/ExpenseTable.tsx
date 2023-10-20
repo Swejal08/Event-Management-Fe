@@ -19,8 +19,6 @@ const ExpenseTable: React.FC<IProps> = ({ categories }) => {
     },
   ]
 
-  const router = useRouter()
-
   return (
     <>
       <Table

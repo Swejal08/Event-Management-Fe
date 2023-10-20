@@ -1,8 +1,8 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation } from '@apollo/client'
-import { CREATE_USER_MUTATION } from '@/graphql/user'
 import { useToasts } from '@/hooks/useToasts'
 import Router, { useRouter } from 'next/router'
+import { CREATE_USER_MUTATION } from '@/features/user/schema/user'
 
 interface IFormInput {
   name: string

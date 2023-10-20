@@ -3,8 +3,11 @@ import { GET_EVENTS_QUERY } from '@/graphql/event'
 import { useQuery } from '@apollo/client'
 import Link from 'next/link'
 import Logout from './logout'
+import RBACInline from '@/components/RBAC/RBACInline'
+import { UserRole } from '@/types/membership'
+import { ReactNode } from 'react'
 
-const Events = () => {
+const EventsPage = () => {
   const { loading, data } = useQuery(GET_EVENTS_QUERY)
 
   if (loading) {
@@ -27,12 +30,7 @@ const Events = () => {
           >
             Add Event
           </Link>
-          <Link
-            href={`/category/add`}
-            className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-          >
-            Add Category
-          </Link>
+
           <Logout />
         </div>
       </div>
@@ -41,4 +39,8 @@ const Events = () => {
   )
 }
 
-export default Events
+EventsPage.getLayout = function getLayout(page: ReactNode) {
+  return <>{page}</>
+}
+
+export default EventsPage
