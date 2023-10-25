@@ -29,7 +29,6 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
       key: 'endDate',
       label: 'End Date',
     },
-    { key: 'action', label: 'Action' },
   ]
 
   const router = useRouter()
