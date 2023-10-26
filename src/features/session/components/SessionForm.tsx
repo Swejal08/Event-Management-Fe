@@ -6,6 +6,9 @@ import { ISession } from '@/types/session'
 import { useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import moment from 'moment'
 
 interface IFormInput {
   eventId: string
@@ -23,6 +26,8 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
   const router = useRouter()
 
   const eventId = router.query.pid
+
+  const event = events?.filter((event: IEvent) => event.id === eventId) ?? []
 
   const [createSession] = useMutation(ADD_EVENT_SESSION, {
     refetchQueries: [
@@ -47,24 +52,36 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
   const {
     register,
     control,
+    getValues,
     formState: { errors },
     handleSubmit,
   } = useForm<IFormInput>({
     defaultValues: session
       ? {
+          eventId: event[0].name,
           name: session.name,
           startDate: session.startDate,
           endDate: session.endDate,
         }
-      : {},
+      : { eventId: event[0].name },
   })
 
-  const onSubmit: SubmitHandler<IFormInput> = async data => {
+  const onSubmit: SubmitHandler<IFormInput> = async ({
+    name,
+    startDate,
+    endDate,
+  }) => {
     const sessionInput = {
-      eventId: data.eventId,
-      name: data.name,
-      startDate: data.startDate,
-      endDate: data.endDate,
+      eventId,
+      name,
+      startDate: moment
+        .utc(new Date(startDate))
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss'),
+      endDate: moment
+        .utc(new Date(endDate))
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss'),
     }
 
     if (session) {
@@ -105,7 +122,7 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
         <div className="text-center">
           <div className="mt-5 space-y-2">
             <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
-              {eventId ? 'Update' : 'Create'} a Session
+              {session ? 'Update' : 'Create'} a Session
             </h3>
           </div>
         </div>
@@ -115,36 +132,21 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
             className="space-y-5"
             noValidate
           >
-            {events && !eventId && (
-              <div>
-                <label className="font-medium">Event</label>
-                <Controller
-                  name="eventId"
-                  control={control}
-                  defaultValue={events[0].id}
-                  render={({ field }) => (
-                    <select
-                      {...field}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option
-                        value=""
-                        disabled
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      >
-                        Choose an event
-                      </option>
-
-                      {events.map((event: any) => (
-                        <option key={event.id} value={event.id}>
-                          {event.name}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                />
-              </div>
-            )}
+            <div>
+              <label className="font-medium">Event</label>
+              <input
+                disabled
+                type="eventId"
+                defaultValue={events?.length ? event[0].name : undefined}
+                {...register('eventId', {
+                  required: 'Event is required',
+                })}
+                className="cursor-not-allowed w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+              />
+              {errors.name && (
+                <p className="text-red-500">{errors.name.message}</p>
+              )}
+            </div>
 
             <div>
               <label className="font-medium">Name</label>
@@ -160,35 +162,72 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
               )}
             </div>
 
-            <div>
+            <div className="flex flex-col">
               <label className="font-medium">Start Date</label>
-              <input
-                type="text"
-                {...register('startDate', {
-                  required: 'Start Date is required',
-                })}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+              <Controller
+                name="startDate"
+                control={control}
+                rules={{ required: 'Start Date is required' }}
+                render={({ field: { onChange, value } }) => {
+                  const selectedDate = value ? new Date(value) : null
+                  return (
+                    <DatePicker
+                      className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      selected={selectedDate}
+                      onChange={onChange}
+                      showTimeSelect
+                      timeIntervals={15}
+                      dateFormat="M/d/yyyy h:mmaaa"
+                      popperPlacement="bottom-end"
+                      minDate={new Date(new Date().toLocaleDateString())}
+                    />
+                  )
+                }}
               />
               {errors.startDate && (
                 <p className="text-red-500">{errors.startDate.message}</p>
               )}
             </div>
-
-            <div>
+            <div className="flex flex-col">
               <label className="font-medium">End Date</label>
-              <input
-                {...register('endDate', {
+              <Controller
+                name="endDate"
+                control={control}
+                rules={{
                   required: 'End Date is required',
-                })}
-                type="text"
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                  validate: (value: string) => {
+                    const startDateTime = moment(getValues('startDate'))
+                    const endDateTime = moment(value)
+                    if (endDateTime.isSameOrBefore(startDateTime)) {
+                      return 'End Date must be later than Start Date'
+                    } else {
+                      return true
+                    }
+                  },
+                }}
+                render={({ field: { onChange, value } }) => {
+                  const selectedDate = value ? new Date(value) : null
+                  return (
+                    <DatePicker
+                      className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+                      selected={selectedDate}
+                      onChange={onChange}
+                      showTimeSelect
+                      timeIntervals={15}
+                      dateFormat="M/d/yyyy h:mmaaa"
+                      popperPlacement="bottom-end"
+                      minDate={new Date(new Date().toLocaleDateString())}
+                    />
+                  )
+                }}
               />
               {errors.endDate && (
                 <p className="text-red-500">{errors.endDate.message}</p>
               )}
             </div>
+
             <button className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150">
-              {eventId ? 'Update' : 'Create'} Session
+              {session ? 'Update' : 'Create'} Session
             </button>
           </form>
         </div>

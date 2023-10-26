@@ -8,9 +8,7 @@ interface IProps {
 const Sessions: React.FC<IProps> = ({ eventDetails }) => {
   return (
     <>
-      {/* {!loadingEventDetails && ( */}
       <SessionTable sessions={eventDetails.sessions} />
-      {/* )} */}
     </>
   )
 }

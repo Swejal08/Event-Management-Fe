@@ -16,7 +16,7 @@ SessionsPage.getLayout = function getLayout(page: ReactNode) {
   return (
     <EventLayout
       header="Sessions"
-      activeSideBar="session"
+      activeSideBar="sessions"
       actionItems={<SessionHeadingButtons />}
     >
       {page}

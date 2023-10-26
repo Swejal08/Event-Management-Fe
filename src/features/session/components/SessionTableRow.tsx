@@ -1,5 +1,6 @@
 import { ISession } from '@/types/session'
 import { ReactNode } from 'react'
+import moment from 'moment'
 
 interface IProps {
   session: ISession
@@ -9,8 +10,11 @@ interface IProps {
 const SessionTableRow: React.FC<IProps> = ({ session, children }) => {
   const row = {
     name: session.name,
-    startDate: session.startDate,
-    endDate: session.endDate,
+    startDate: moment
+      .utc(session.startDate)
+      .local()
+      .format('Do MMM YYYY h:mm a'),
+    endDate: moment.utc(session.endDate).local().format('Do MMM YYYY h:mm a'),
   }
 
   return (
