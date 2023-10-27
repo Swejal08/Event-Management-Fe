@@ -10,12 +10,14 @@ import { REMOVE_EVENT_SESSION } from '@/graphql/session'
 import { GET_EVENT_DETAILS } from '@/graphql/event'
 import { IsAttendee } from '@/lib/utils'
 import { MY_USER_DETAILS } from '@/features/user/schema/user'
+import RBACInline from '@/components/RBAC/RBACInline'
+import { UserRole } from '@/types/membership'
 
 interface IProps {
   sessions: ISession[]
 }
 
-const UserTable: React.FC<IProps> = ({ sessions }) => {
+const SessionTable: React.FC<IProps> = ({ sessions }) => {
   const SESSION_COLUMNS = [
     {
       key: 'name',
@@ -32,7 +34,7 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
   ]
 
   const router = useRouter()
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const [removeSession] = useMutation(REMOVE_EVENT_SESSION, {
@@ -65,7 +67,10 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
   }
 
   const renderActionButtons = (session: ISession) => (
-    <>
+    <RBACInline
+      allowedRoles={[UserRole.ADMIN, UserRole.CONTRIBUTOR]}
+      eventId={eventId}
+    >
       <button
         onClick={() =>
           router.push(`/event/${eventId}/session/${session.id}/edit`)
@@ -83,7 +88,7 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
       >
         Remove
       </button>
-    </>
+    </RBACInline>
   )
 
   const handleSessionRemoval = async (id: string | null) => {
@@ -126,4 +131,4 @@ const UserTable: React.FC<IProps> = ({ sessions }) => {
   )
 }
 
-export default UserTable
+export default SessionTable

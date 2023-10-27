@@ -1,9 +1,9 @@
-import AddExpense from '@/features/expense/pages/add'
+import ExpenseForm from '@/features/expense/components/ExpenseForm'
 import { UserRole } from '@/types/membership'
 import { ReactNode } from 'react'
 
 const AddExpensePage = () => {
-  return <AddExpense />
+  return <ExpenseForm />
 }
 
 AddExpensePage.getLayout = function getLayout(page: ReactNode) {

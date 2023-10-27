@@ -1,28 +1,52 @@
 import { GET_EVENT_CATEGORIES } from '@/graphql/category'
-import { CREATE_EVENT_MUTATION } from '@/graphql/event'
-import { ADD_EVENT_EXPENSE } from '@/graphql/expense'
+import {
+  ADD_EVENT_EXPENSE,
+  GET_ALL_EVENT_EXPENSES,
+  UPDATE_EXPENSE,
+} from '@/graphql/expense'
 import { useToasts } from '@/hooks/useToasts'
+import { IExpense, IExpenses } from '@/types/expense'
 import { useMutation, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
-import React from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 interface IFormInput {
   item: string
-  cost: string
+  cost: string | number
   description?: string
   categoryId: string
 }
 
-const AddExpense = () => {
+export interface IExpenseDetails {
+  id: string
+  eventId: string
+  itemName: string
+  cost: number
+  description?: string
+  categoryId: string
+}
+
+interface IProps {
+  expense?: IExpenseDetails
+}
+
+const ExpenseForm: React.FC<IProps> = ({ expense }) => {
   const { showSuccessMessage, showErrorMessage } = useToasts()
   const {
     register,
     control,
     formState: { errors },
     handleSubmit,
-    reset,
-  } = useForm<IFormInput>()
+  } = useForm<IFormInput>({
+    defaultValues: expense
+      ? {
+          item: expense.itemName,
+          cost: expense.cost,
+          description: expense.description,
+          categoryId: expense.categoryId,
+        }
+      : {},
+  })
 
   const router = useRouter()
 
@@ -30,29 +54,56 @@ const AddExpense = () => {
 
   const [createExpense] = useMutation(ADD_EVENT_EXPENSE)
 
-  const { loading, data } = useQuery(GET_EVENT_CATEGORIES)
+  const [updateExpense] = useMutation(UPDATE_EXPENSE, {
+    refetchQueries: [
+      {
+        query: GET_ALL_EVENT_EXPENSES,
+        variables: { eventId },
+      },
+    ],
+  })
+
+  const { loading, data } = useQuery(GET_EVENT_CATEGORIES, {
+    variables: { eventId },
+  })
 
   const onSubmit: SubmitHandler<IFormInput> = async data => {
     const expenseInput = {
       eventId: eventId as string,
       itemName: data.item,
-      cost: parseInt(data.cost, 10),
+      cost: parseInt(data.cost as string, 10),
       description: data.description ?? null,
       categoryId: data.categoryId,
     }
 
-    try {
-      const { data } = await createExpense({
-        variables: { input: expenseInput },
-      })
-      if (data) {
-        showSuccessMessage('Expense created')
-        router.push(`events/${eventId}`)
+    if (expense) {
+      try {
+        const { data } = await updateExpense({
+          variables: { id: expense.id, ...expenseInput },
+        })
+        if (data) {
+          showSuccessMessage('Expense updated')
+          router.push(`/event/${eventId}/expense`)
+        }
+      } catch (err: any) {
+        showErrorMessage(
+          err.response?.data ? err.response.data.error : err.message,
+        )
       }
-    } catch (err: any) {
-      showErrorMessage(
-        err.response?.data ? err.response.data.error : err.message,
-      )
+    } else {
+      try {
+        const { data } = await createExpense({
+          variables: { input: expenseInput },
+        })
+        if (data) {
+          showSuccessMessage('Expense created')
+          router.push(`/event/${eventId}/expense`)
+        }
+      } catch (err: any) {
+        showErrorMessage(
+          err.response?.data ? err.response.data.error : err.message,
+        )
+      }
     }
   }
 
@@ -66,7 +117,7 @@ const AddExpense = () => {
         <div className="text-center">
           <div className="mt-5 space-y-2">
             <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
-              Create an Expense
+              {expense ? 'Update' : 'Create'} an Expense
             </h3>
           </div>
         </div>
@@ -118,7 +169,9 @@ const AddExpense = () => {
                 name="categoryId"
                 control={control}
                 disabled={!data.getCategories.length}
-                defaultValue={data.getCategories?.[0]?.id}
+                defaultValue={
+                  expense ? expense.categoryId : data.getCategories?.[0]?.id
+                }
                 render={({ field }) => (
                   <select
                     {...field}
@@ -132,11 +185,13 @@ const AddExpense = () => {
                       Choose a Category
                     </option>
 
-                    {data.getCategories.map((category: any) => (
-                      <option key={category.id} value={category.id}>
-                        {category.categoryName}
-                      </option>
-                    ))}
+                    {data.getCategories.map(
+                      (category: IExpenses['category']) => (
+                        <option key={category.id} value={category.id}>
+                          {category.categoryName}
+                        </option>
+                      ),
+                    )}
                   </select>
                 )}
               />
@@ -145,7 +200,7 @@ const AddExpense = () => {
               )}
             </div>
             <button className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-600 rounded-lg duration-150">
-              Create Expense
+              {expense ? 'Update' : 'Create'} Expense
             </button>
           </form>
         </div>
@@ -154,4 +209,4 @@ const AddExpense = () => {
   )
 }
 
-export default AddExpense
+export default ExpenseForm

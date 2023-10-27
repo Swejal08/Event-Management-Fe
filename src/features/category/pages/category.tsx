@@ -36,7 +36,7 @@ const AddEventCategory = () => {
       if (data) {
         reset()
         showSuccessMessage('Category created')
-        router.push(`events/${eventId}`)
+        router.push(`/event/${eventId}`)
       }
     } catch (err: any) {
       showErrorMessage(

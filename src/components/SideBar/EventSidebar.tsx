@@ -78,7 +78,7 @@ const EventSidebar: React.FC<IProps> = ({ header, active }) => {
       ),
     },
     {
-      href: 'javascript:void(0)',
+      href: `/event/${eventId}/expense`,
       name: 'Expenses',
       key: 'expenses',
       icon: (
@@ -99,7 +99,7 @@ const EventSidebar: React.FC<IProps> = ({ header, active }) => {
       ),
     },
     {
-      href: 'javascript:void(0)',
+      href: `/event/${eventId}/category`,
       name: 'Categories',
       key: 'categories',
       icon: (
