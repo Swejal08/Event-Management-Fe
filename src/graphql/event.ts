@@ -11,9 +11,15 @@ export const CREATE_EVENT_MUTATION = gql`
   }
 `
 
+export const UPDATE_EVENT = gql`
+  mutation updateEvent($input: UpdateEvent!) {
+    updateEvent(input: $input)
+  }
+`
+
 export const GET_EVENTS_QUERY = gql`
-  query GetMyEvents($userId: ID!) {
-    events(userId: $userId) {
+  query GetMyEvents {
+    events {
       id
       name
       description
@@ -23,17 +29,24 @@ export const GET_EVENTS_QUERY = gql`
 `
 
 export const GET_EVENT_DETAILS = gql`
-  query GetEventDetails($userId: ID!, $eventId: ID!) {
-    eventDetails(userId: $userId, eventId: $eventId) {
+  query GetEventDetails($eventId: ID!) {
+    eventDetails(eventId: $eventId) {
       id
       name
       location
       description
       sessions {
         id
+        name
         startDate
         endDate
       }
     }
+  }
+`
+
+export const REMOVE_EVENT = gql`
+  mutation deleteEvent($input: DeleteEvent!) {
+    deleteEvent(input: $input)
   }
 `

@@ -4,15 +4,17 @@ export const ADD_EVENT_CATEGORY = gql`
   mutation createCategory($input: NewCategory!) {
     createCategory(input: $input) {
       id
+      eventId
       categoryName
     }
   }
 `
 
 export const GET_EVENT_CATEGORIES = gql`
-  query getCategories($userId: ID!, $eventId: ID!) {
-    getCategories(userId: $userId, eventId: $eventId) {
+  query getCategories($eventId: ID!) {
+    getCategories(eventId: $eventId) {
       id
+      eventId
       categoryName
     }
   }

@@ -1,9 +1,9 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation } from '@apollo/client'
-import { USER_LOGIN } from '@/graphql/user'
 import { useToasts } from '@/hooks/useToasts'
 import Cookies from 'universal-cookie'
 import { useRouter } from 'next/router'
+import { USER_LOGIN } from '@/features/user/schema/user'
 
 interface IFormInput {
   email: string
