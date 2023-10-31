@@ -9,6 +9,7 @@ import { GET_EVENTS_QUERY, REMOVE_EVENT } from '@/graphql/event'
 import { useRouter } from 'next/router'
 import RBACInline from '@/components/RBAC/RBACInline'
 import { UserRole } from '@/types/membership'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IProps {
   events: IEvent[]
@@ -56,7 +57,7 @@ const EventTable: React.FC<IProps> = ({ events }) => {
   const renderActionButtons = (event: IEvent) => (
     <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={event.id}>
       <button
-        onClick={() => router.push(`/event/${event.id}/edit`)}
+        onClick={() => router.push(DASHBOARD_URL.EVENT.EDIT(event.id))}
         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
       >
         Edit

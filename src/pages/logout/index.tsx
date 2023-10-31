@@ -1,3 +1,4 @@
+import { DASHBOARD_URL } from '@/consts/route'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
@@ -8,7 +9,7 @@ const Logout = () => {
 
   const handleLogout = () => {
     cookie.remove('accessToken')
-    router.push('/login')
+    router.push(DASHBOARD_URL.LOGIN)
   }
 
   return (

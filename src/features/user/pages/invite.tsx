@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { UserRole } from '@/types/membership'
 import { INVITE_USER, NON_EVENT_MEMBER_USER } from '@/features/user/schema/user'
 import { GET_EVENT_MEMBERS_DETAIL } from '@/features/user/schema/eventMembers'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IFormInput {
   userId: string
@@ -50,7 +51,7 @@ const InviteUser = () => {
       })
       if (data) {
         showSuccessMessage('User Invited')
-        router.push(`/event/${eventId}`)
+        router.push(DASHBOARD_URL.USER.ROOT(eventId))
       }
     } catch (err: any) {
       showErrorMessage(

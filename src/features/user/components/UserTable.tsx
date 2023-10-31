@@ -10,6 +10,7 @@ import RBACInline from '@/components/RBAC/RBACInline'
 import { IsAdmin } from '@/lib/utils'
 import { MY_USER_DETAILS, REMOVE_USER } from '../schema/user'
 import { GET_EVENT_MEMBERS_DETAIL } from '../schema/eventMembers'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IProps {
   users: IMembershipDetails[]
@@ -72,7 +73,7 @@ const UserTable: React.FC<IProps> = ({ users }) => {
     <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
       <button
         onClick={() =>
-          router.push(`/event/${eventId}/user/${user.user.id}/reassign`)
+          router.push(DASHBOARD_URL.USER.REASSIGN(eventId, user.id))
         }
         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
       >

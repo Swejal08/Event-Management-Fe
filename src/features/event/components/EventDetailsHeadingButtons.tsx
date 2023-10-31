@@ -1,4 +1,5 @@
 import RBACInline from '@/components/RBAC/RBACInline'
+import { DASHBOARD_URL } from '@/consts/route'
 import Logout from '@/pages/logout'
 import { UserRole } from '@/types/membership'
 import Link from 'next/link'
@@ -15,13 +16,13 @@ const EventDetailsHeadingButtons = () => {
         eventId={eventId}
       >
         <Link
-          href={`/session/add`}
+          href={DASHBOARD_URL.SESSION.ADD(eventId)}
           className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
         >
           Add Session
         </Link>
         <Link
-          href={`/event/${eventId}/invite`}
+          href={DASHBOARD_URL.USER.INVITE(eventId)}
           className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
         >
           Invite User
@@ -29,7 +30,7 @@ const EventDetailsHeadingButtons = () => {
       </RBACInline>
       <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
         <Link
-          href={`/event/${eventId}/category/add`}
+          href={DASHBOARD_URL.CATEGORY.ADD(eventId)}
           className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
         >
           Add Category
@@ -37,7 +38,7 @@ const EventDetailsHeadingButtons = () => {
       </RBACInline>
       <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
         <Link
-          href={`/event/${eventId}/expense/add`}
+          href={DASHBOARD_URL.EXPENSE.ADD(eventId)}
           className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
         >
           Add Expense

@@ -1,3 +1,4 @@
+import { DASHBOARD_URL } from '@/consts/route'
 import { GET_EVENT_CATEGORIES } from '@/graphql/category'
 import {
   ADD_EVENT_EXPENSE,
@@ -50,7 +51,7 @@ const ExpenseForm: React.FC<IProps> = ({ expense }) => {
 
   const router = useRouter()
 
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
 
   const [createExpense] = useMutation(ADD_EVENT_EXPENSE)
 
@@ -83,7 +84,7 @@ const ExpenseForm: React.FC<IProps> = ({ expense }) => {
         })
         if (data) {
           showSuccessMessage('Expense updated')
-          router.push(`/event/${eventId}/expense`)
+          router.push(DASHBOARD_URL.EXPENSE.ROOT(eventId))
         }
       } catch (err: any) {
         showErrorMessage(
@@ -97,7 +98,7 @@ const ExpenseForm: React.FC<IProps> = ({ expense }) => {
         })
         if (data) {
           showSuccessMessage('Expense created')
-          router.push(`/event/${eventId}/expense`)
+          router.push(DASHBOARD_URL.EXPENSE.ROOT(eventId))
         }
       } catch (err: any) {
         showErrorMessage(

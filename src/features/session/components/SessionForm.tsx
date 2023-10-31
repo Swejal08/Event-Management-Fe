@@ -9,6 +9,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IFormInput {
   eventId: string
@@ -25,7 +26,7 @@ interface IProps {
 const SessionForm: React.FC<IProps> = ({ events, session }) => {
   const router = useRouter()
 
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
 
   const event = events?.filter((event: IEvent) => event.id === eventId) ?? []
 
@@ -92,7 +93,7 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
 
         if (data) {
           showSuccessMessage('Session updated')
-          router.push(`/event/${eventId}`)
+          router.push(DASHBOARD_URL.SESSION.ROOT(eventId))
         }
       } catch (err: any) {
         showErrorMessage(
@@ -106,7 +107,7 @@ const SessionForm: React.FC<IProps> = ({ events, session }) => {
         })
         if (data) {
           showSuccessMessage('Session created')
-          router.push(`/event/${sessionInput.eventId}`)
+          router.push(DASHBOARD_URL.SESSION.ROOT(eventId))
         }
       } catch (err: any) {
         showErrorMessage(

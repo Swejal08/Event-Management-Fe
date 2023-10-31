@@ -12,6 +12,7 @@ import { MY_USER_DETAILS } from '@/features/user/schema/user'
 import { IsAdmin, IsAttendee } from '@/lib/utils'
 import RBACInline from '@/components/RBAC/RBACInline'
 import { UserRole } from '@/types/membership'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IProps {
   expenses: IExpenses[]
@@ -94,7 +95,7 @@ const ExpenseOnlyTable: React.FC<IProps> = ({ expenses }) => {
     <RBACInline allowedRoles={[UserRole.ADMIN]} eventId={eventId}>
       <button
         onClick={() =>
-          router.push(`/event/${eventId}/expense/${expense.id}/edit`)
+          router.push(DASHBOARD_URL.EXPENSE.EDIT(eventId, expense.id))
         }
         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
       >

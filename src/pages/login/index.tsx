@@ -4,6 +4,7 @@ import { useToasts } from '@/hooks/useToasts'
 import Cookies from 'universal-cookie'
 import { useRouter } from 'next/router'
 import { USER_LOGIN } from '@/features/user/schema/user'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IFormInput {
   email: string
@@ -32,7 +33,7 @@ const Login = () => {
       if (data) {
         cookies.set('accessToken', data.login.accessToken)
         showSuccessMessage('Login Successful')
-        router.push('/events')
+        router.push(DASHBOARD_URL.EVENTS)
       }
     } catch (err: any) {
       showErrorMessage(

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { UserRole } from '@/types/membership'
 import { INVITE_USER, USER_DETAILS } from '@/features/user/schema/user'
 import { GET_EVENT_MEMBERS_DETAIL } from '@/features/user/schema/eventMembers'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IFormInput {
   role: UserRole
@@ -13,7 +14,7 @@ interface IFormInput {
 const ReassignUser = () => {
   const router = useRouter()
 
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
 
   const userId = router.query.uid
 
@@ -49,7 +50,7 @@ const ReassignUser = () => {
       })
       if (data) {
         showSuccessMessage('User role reassigned')
-        router.push(`/event/${eventId}`)
+        router.push(DASHBOARD_URL.USER.ROOT(eventId))
       }
     } catch (err: any) {
       showErrorMessage(

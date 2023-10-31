@@ -1,3 +1,4 @@
+import { DASHBOARD_URL } from '@/consts/route'
 import {
   CREATE_EVENT_MUTATION,
   GET_EVENTS_QUERY,
@@ -65,7 +66,7 @@ const EventForm: React.FC<IProps> = ({ event }) => {
         })
         if (data) {
           showSuccessMessage('Event created')
-          router.push('/events')
+          router.push(DASHBOARD_URL.EVENTS)
         }
       } else {
         const { data } = await updateEvent({
@@ -73,7 +74,7 @@ const EventForm: React.FC<IProps> = ({ event }) => {
         })
         if (data) {
           showSuccessMessage('Event updated')
-          router.push('/events')
+          router.push(DASHBOARD_URL.EVENTS)
         }
       }
     } catch (err: any) {

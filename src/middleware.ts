@@ -1,11 +1,11 @@
-import { useQuery } from '@apollo/client'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import jwt_decode, { JwtPayload } from 'jwt-decode'
+import { DASHBOARD_URL } from './consts/route'
 
-const privateRoutes = ['/events', '/event']
+const privateRoutes = [DASHBOARD_URL.EVENTS, '/event']
 
-const publicRoutes = ['/login', '/register']
+const publicRoutes = [DASHBOARD_URL.LOGIN, DASHBOARD_URL.REGISTER]
 
 export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
@@ -20,23 +20,23 @@ export default function middleware(req: NextRequest) {
       // Check if the token is expired
       if (decodedToken.exp && decodedToken.exp < Date.now() / 1000) {
         // Token is expired, redirect to login
-        const absoluteURL = new URL('/login', req.nextUrl.origin)
+        const absoluteURL = new URL(DASHBOARD_URL.LOGIN, req.nextUrl.origin)
         return NextResponse.redirect(absoluteURL.toString())
       }
       isAuthenticated = true
     } catch (error) {
-      const absoluteURL = new URL('/login', req.nextUrl.origin)
+      const absoluteURL = new URL(DASHBOARD_URL.LOGIN, req.nextUrl.origin)
       return NextResponse.redirect(absoluteURL.toString())
     }
   }
 
   if (!isAuthenticated && privateRoutes.includes(pathname)) {
-    const absoluteURL = new URL('/login', req.nextUrl.origin)
+    const absoluteURL = new URL(DASHBOARD_URL.LOGIN, req.nextUrl.origin)
     return NextResponse.redirect(absoluteURL.toString())
   }
 
   if (isAuthenticated && publicRoutes.includes(pathname)) {
-    const absoluteURL = new URL('/events', req.nextUrl.origin)
+    const absoluteURL = new URL(DASHBOARD_URL.EVENTS, req.nextUrl.origin)
     return NextResponse.redirect(absoluteURL.toString())
   }
 

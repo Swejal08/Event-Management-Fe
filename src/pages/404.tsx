@@ -1,3 +1,4 @@
+import { DASHBOARD_URL } from '@/consts/route'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -17,7 +18,7 @@ const NotAuthorized = () => {
           </p>
           <Link
             href="#"
-            onClick={() => router.push('/events')}
+            onClick={() => router.push(DASHBOARD_URL.EVENTS)}
             className="text-indigo-600 duration-150 hover:text-indigo-400 font-medium inline-flex items-center gap-x-1"
           >
             Go back

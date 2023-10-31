@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client'
 import { useToasts } from '@/hooks/useToasts'
 import Router, { useRouter } from 'next/router'
 import { CREATE_USER_MUTATION } from '@/features/user/schema/user'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IFormInput {
   name: string
@@ -34,7 +35,7 @@ const Register = () => {
       const { data } = await createUser({ variables: { input: userInput } })
       if (data) {
         showSuccessMessage('User created')
-        router.push('/login')
+        router.push(DASHBOARD_URL.LOGIN)
       }
     } catch (err: any) {
       showErrorMessage(

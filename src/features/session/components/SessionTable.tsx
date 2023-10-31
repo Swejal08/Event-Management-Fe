@@ -12,6 +12,7 @@ import { IsAttendee } from '@/lib/utils'
 import { MY_USER_DETAILS } from '@/features/user/schema/user'
 import RBACInline from '@/components/RBAC/RBACInline'
 import { UserRole } from '@/types/membership'
+import { DASHBOARD_URL } from '@/consts/route'
 
 interface IProps {
   sessions: ISession[]
@@ -73,7 +74,7 @@ const SessionTable: React.FC<IProps> = ({ sessions }) => {
     >
       <button
         onClick={() =>
-          router.push(`/event/${eventId}/session/${session.id}/edit`)
+          router.push(DASHBOARD_URL.SESSION.EDIT(eventId, session.id))
         }
         className="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
       >

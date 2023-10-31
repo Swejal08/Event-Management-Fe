@@ -1,5 +1,4 @@
 import EventForm from '@/features/event/components/EventForm'
-import { UserRole } from '@/types/membership'
 import React, { ReactNode } from 'react'
 
 const AddEventPage = () => {

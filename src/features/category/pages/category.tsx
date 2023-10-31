@@ -1,3 +1,4 @@
+import { DASHBOARD_URL } from '@/consts/route'
 import { ADD_EVENT_CATEGORY } from '@/graphql/category'
 import { useToasts } from '@/hooks/useToasts'
 import { useMutation } from '@apollo/client'
@@ -20,7 +21,7 @@ const AddEventCategory = () => {
 
   const router = useRouter()
 
-  const eventId = router.query.pid
+  const eventId = router.query.pid as string
 
   const [createEvent] = useMutation(ADD_EVENT_CATEGORY)
 
@@ -36,7 +37,7 @@ const AddEventCategory = () => {
       if (data) {
         reset()
         showSuccessMessage('Category created')
-        router.push(`/event/${eventId}`)
+        router.push(DASHBOARD_URL.EVENT.ROOT(eventId))
       }
     } catch (err: any) {
       showErrorMessage(
